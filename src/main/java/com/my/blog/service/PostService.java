@@ -1,9 +1,7 @@
 package com.my.blog.service;
 
-import com.my.blog.dto.PostDto;
-import com.my.blog.dto.PostResponse;
-
-import java.util.List;
+import com.my.blog.dto.post.PostDto;
+import com.my.blog.dto.post.PostResponse;
 
 public interface PostService {
 

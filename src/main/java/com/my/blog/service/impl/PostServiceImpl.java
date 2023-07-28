@@ -1,7 +1,7 @@
 package com.my.blog.service.impl;
 
-import com.my.blog.dto.PostDto;
-import com.my.blog.dto.PostResponse;
+import com.my.blog.dto.post.PostDto;
+import com.my.blog.dto.post.PostResponse;
 import com.my.blog.entity.Post;
 import com.my.blog.exception.ResourceNotFoundException;
 import com.my.blog.repository.PostRepository;
@@ -32,9 +32,7 @@ public class PostServiceImpl implements PostService {
 
         Post newPost = postRepository.save(post);
 
-        PostDto postResponse = mapPostToDto(newPost);
-
-        return postResponse;
+        return mapPostToDto(newPost);
     }
 
     @Override
