@@ -1,15 +1,13 @@
 package com.my.blog.controller;
 
-import com.my.blog.dto.PostDto;
-import com.my.blog.dto.PostResponse;
+import com.my.blog.dto.post.PostDto;
+import com.my.blog.dto.post.PostResponse;
 import com.my.blog.service.PostService;
 import com.my.blog.utils.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/posts")

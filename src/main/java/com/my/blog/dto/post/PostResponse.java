@@ -1,5 +1,6 @@
-package com.my.blog.dto;
+package com.my.blog.dto.post;
 
+import com.my.blog.dto.post.PostDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
