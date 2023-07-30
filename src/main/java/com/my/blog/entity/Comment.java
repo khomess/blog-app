@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="comments")
+@Table(name="comments", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 public class Comment{
 
     @Id
