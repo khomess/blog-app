@@ -3,7 +3,7 @@ package com.my.blog.dto.comment;
 import lombok.Data;
 
 @Data
-public class CommentDto {
+public class CommentDto{
     private long id;
     private String name;
     private String email;

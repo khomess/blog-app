@@ -6,6 +6,7 @@ import com.my.blog.entity.Post;
 import com.my.blog.exception.ResourceNotFoundException;
 import com.my.blog.repository.PostRepository;
 import com.my.blog.service.PostService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,18 +22,21 @@ public class PostServiceImpl implements PostService {
 
     private PostRepository postRepository;
 
+    private ModelMapper modelMapper;
+
     @Autowired
-    public PostServiceImpl(PostRepository postRepository) {
+    public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper) {
         this.postRepository = postRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
     public PostDto createPost(PostDto postDto) {
-        Post post = mapDtoToPost(postDto);
+        Post post = modelMapper.map(postDto, Post.class);
 
         Post newPost = postRepository.save(post);
 
-        return mapPostToDto(newPost);
+        return  modelMapper.map(newPost, PostDto.class);
     }
 
     @Override
@@ -47,7 +51,7 @@ public class PostServiceImpl implements PostService {
 
         List<Post> listOfPosts = posts.getContent();
 
-        List<PostDto> content = listOfPosts.stream().map(this::mapPostToDto).collect(Collectors.toList());
+        List<PostDto> content = listOfPosts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
 
         PostResponse postResponse = new PostResponse();
         postResponse.setContent(content);
@@ -63,7 +67,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDto getPostById(long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
-        return mapPostToDto(post);
+        return modelMapper.map(post, PostDto.class);
     }
 
     @Override
@@ -76,33 +80,12 @@ public class PostServiceImpl implements PostService {
 
         Post updatePost = postRepository.save(post);
 
-        return mapPostToDto(updatePost);
+        return modelMapper.map(updatePost, PostDto.class);
     }
 
     @Override
     public void deletePostById(long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
         postRepository.delete(post);
-    }
-
-    private PostDto mapPostToDto(Post post) {
-        PostDto postResponse = new PostDto();
-
-        postResponse.setId(post.getId());
-        postResponse.setTitle(post.getTitle());
-        postResponse.setDescription(post.getDescription());
-        postResponse.setContent(post.getContent());
-
-        return postResponse;
-    }
-
-    private Post mapDtoToPost(PostDto postDto) {
-        Post post = new Post();
-
-        post.setTitle(postDto.getTitle());
-        post.setDescription(postDto.getDescription());
-        post.setContent(postDto.getContent());
-
-        return post;
     }
 }

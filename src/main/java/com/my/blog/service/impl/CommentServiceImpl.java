@@ -1,7 +1,6 @@
 package com.my.blog.service.impl;
 
 import com.my.blog.dto.comment.CommentDto;
-import com.my.blog.dto.post.PostDto;
 import com.my.blog.entity.Comment;
 import com.my.blog.entity.Post;
 import com.my.blog.exception.BlogAPIException;
@@ -9,6 +8,7 @@ import com.my.blog.exception.ResourceNotFoundException;
 import com.my.blog.repository.CommentRepository;
 import com.my.blog.repository.PostRepository;
 import com.my.blog.service.CommentService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,27 +22,30 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
     private PostRepository postRepository;
 
+    private ModelMapper modelMapper;
+
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository, ModelMapper modelMapper) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
     public CommentDto createComment(long postId, CommentDto commentDto) {
-        Comment comment = mapDtoToComment(commentDto);
+        Comment comment = modelMapper.map(commentDto, Comment.class);
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
         comment.setPost(post);
 
         Comment newComment = commentRepository.save(comment);
-        return mapCommentToDto(newComment);
+        return modelMapper.map(newComment, CommentDto.class);
     }
 
     @Override
     public List<CommentDto> getAllCommentsByPostId(long postId) {
         List<Comment> comments = commentRepository.findByPostId(postId);
-        return comments.stream().map(this::mapCommentToDto).collect(Collectors.toList());
+        return comments.stream().map(comment -> modelMapper.map(comment, CommentDto.class)).collect(Collectors.toList());
     }
 
     @Override
@@ -55,7 +58,7 @@ public class CommentServiceImpl implements CommentService {
             throw  new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong po post");
         }
 
-        return mapCommentToDto(comment);
+        return modelMapper.map(comment, CommentDto.class);
     }
 
     @Override
@@ -74,7 +77,7 @@ public class CommentServiceImpl implements CommentService {
 
         Comment updatedComment = commentRepository.save(comment);
 
-        return mapCommentToDto(updatedComment);
+        return modelMapper.map(updatedComment, CommentDto.class);
     }
 
     @Override
@@ -87,26 +90,5 @@ public class CommentServiceImpl implements CommentService {
             throw  new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong po post");
         }
         commentRepository.delete(comment);
-    }
-
-    private CommentDto mapCommentToDto(Comment comment) {
-        CommentDto commentDto = new CommentDto();
-
-        commentDto.setId(comment.getId());
-        commentDto.setName(comment.getName());
-        commentDto.setEmail(comment.getEmail());
-        commentDto.setMessageBody(comment.getMessageBody());
-
-        return commentDto;
-    }
-
-    private Comment mapDtoToComment(CommentDto commentDto) {
-        Comment comment = new Comment();
-
-        comment.setName(commentDto.getName());
-        comment.setEmail(commentDto.getEmail());
-        comment.setMessageBody(commentDto.getMessageBody());
-
-        return comment;
     }
 }
