@@ -1,4 +1,4 @@
-package com.my.blog.exception;
+package com.my.blog.configuration.exception;
 
 import com.my.blog.dto.exception.ErrorDetails;
 import org.springframework.http.HttpHeaders;
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<ErrorDetails> buildExceptionBody(Exception exception, WebRequest webRequest, HttpStatus httpStatus) {
+    private ResponseEntity<ErrorDetails> buildExceptionBody(Exception exception, WebRequest webRequest, HttpStatusCode httpStatus) {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(), webRequest.getDescription(false));
         return new ResponseEntity<>(errorDetails, httpStatus);
     }
