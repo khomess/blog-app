@@ -31,16 +31,16 @@ public class CommentController {
         return commentService.getAllCommentsByPostId(postId);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{commentId}")
     public ResponseEntity<CommentDto> getCommentById(@PathVariable(name = "postId") long postId,
-                                                     @PathVariable(name = "id") long commentId) {
+                                                     @PathVariable(name = "commentId") long commentId) {
         CommentDto commentDto = commentService.getCommentById(postId, commentId);
         return new ResponseEntity<>(commentDto, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{commentId}")
     public ResponseEntity<CommentDto> updateCommentById(@PathVariable(name = "postId") long postId,
-                                                        @PathVariable(name = "id") long commentId,
+                                                        @PathVariable(name = "commentId") long commentId,
                                                         @Valid @RequestBody CommentDto commentDto) {
         CommentDto updatedComment = commentService.updateCommentById(postId, commentId, commentDto);
         return new ResponseEntity<>(updatedComment, HttpStatus.OK);
