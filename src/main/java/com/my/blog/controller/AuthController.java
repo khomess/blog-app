@@ -1,5 +1,6 @@
 package com.my.blog.controller;
 
+import com.my.blog.dto.JWTAuthResponse;
 import com.my.blog.dto.user.LoginDto;
 import com.my.blog.dto.user.RegisterDto;
 import com.my.blog.service.AuthService;
@@ -22,10 +23,14 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping("/signin")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
-        String response = authService.login(loginDto);
-        return ResponseEntity.ok(response);
+    @PostMapping(value = {"/login", "/signin"})
+    public ResponseEntity<JWTAuthResponse> login(@RequestBody LoginDto loginDto){
+        String token = authService.login(loginDto);
+
+        JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
+        jwtAuthResponse.setAccessToken(token);
+
+        return ResponseEntity.ok(jwtAuthResponse);
     }
 
     @PostMapping("/signup")
